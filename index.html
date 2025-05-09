@@ -1,0 +1,2508 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="robots" content="follow" />
+        <meta name="author" content="Anshu Sinha" />
+        <meta name="copyright" content="2024" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta
+            name="apple-mobile-web-app-status-bar-style"
+            content="black-translucent"
+        />
+
+        <!-- title -->
+        <title>Anshu Sinha | Portfolio</title>
+
+        <meta
+            name="keywords"
+            content="Anshu Sinha, I am not a robot, I'm not a robot, i'm not a robot, i am not a robot, developer, webgl, threejs, 3d, unity, blender, shaders, shader, glsl, graphics, javascript, coding, coder, programmer, webdev, gamedev, ai, ml"
+        />
+        <meta property="og:type" content="website" />
+        <meta
+            name="description"
+            content="Anshu Sinha is a versatile and innovative developer with a passion for exploring cutting-edge technologies."
+        />
+        <meta property="og:url" content="https://anshusinha.in" />
+        <meta property="og:title" content="Anshu Sinha | Portfolio" />
+        <meta
+            property="og:description"
+            content="Anshu Sinha is a versatile and innovative developer with a passion for exploring cutting-edge technologies."
+        />
+        <meta
+            property="og:image"
+            content="https://anshusinha.in/src/images/share/website.webp"
+        />
+
+        <!-- load icon -->
+        <link rel="icon" href="./assets/iconV1-DSa0Mj0v.webp" />
+
+        <!-- critical css -->
+        <style>
+            @font-face {
+                font-family: "Major Mono Display";
+                src: url("./assets/MajorMonoDisplay-Regular-CgyYBGCP.ttf");
+                font-display: swap;
+            }
+
+            /* ----- Html, Body ----- */
+            html,
+            body {
+                background: #000;
+                margin: 0;
+                height: 100%;
+            }
+
+            /* ----- Body ----- */
+            body {
+                font-family: "Major Mono Display", monospace;
+                overflow-x: hidden;
+            }
+
+            /* ----- WebGL canvas ----- */
+            #webgl {
+                position: fixed;
+                z-index: 0;
+                opacity: 0;
+                transform: scale(0.8) translateZ(-100px); /* initial 3D transformation */
+                transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            }
+
+            #webgl.show {
+                opacity: 1;
+                transform: scale(1) translateZ(0); /* reset 3D transformation */
+            }
+
+            /* ----- Cursor ----- */
+            .inner-cursor {
+                position: fixed;
+                left: 0.5vw;
+                width: 0.5vw;
+                height: 0.5vw;
+                transform: translate(-50%, -50%);
+                background-color: #f8f9fa;
+                mix-blend-mode: difference;
+                border-radius: 50%;
+                pointer-events: none;
+                box-shadow: 0 0 10px #f8f9fa, 0 0 20px #f8f9fa;
+                opacity: 1;
+                transition: width 0.25s, height 0.25s, background-color 0.25s,
+                    box-shadow 0.25s;
+                z-index: 100;
+            }
+
+            .inner-cursor.grow {
+                width: 2.75vw;
+                height: 2.75vw;
+                background-color: #f8f9fa;
+                box-shadow: 0 0 10px #f8f9fa, 0 0 20px #f8f9fa;
+            }
+
+            .outer-cursor {
+                position: fixed;
+                left: 0.5vw;
+                width: 2.75vw;
+                height: 2.75vw;
+                transform: translate(-50%, -50%);
+                border: 0.1vw solid white;
+                mix-blend-mode: difference;
+                border-radius: 50%;
+                opacity: 1;
+                pointer-events: none;
+                z-index: 100;
+            }
+
+            /* ----- Loader ----- */
+            #loader {
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                z-index: 9999;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: #000;
+                transition: opacity 0.5s ease, transform 0.5s;
+            }
+
+            #loader-svg {
+                display: block;
+                width: 90%;
+                height: 1px;
+            }
+
+            /* ----- Background ----- */
+            .background {
+                position: absolute;
+                z-index: 1;
+                background: none;
+            }
+
+            :root {
+                --color-interactive: 100, 200, 250;
+                --blending: screen;
+            }
+
+            .gradient-bg {
+                width: 100%;
+                height: 100%;
+                position: fixed;
+                overflow: hidden;
+                top: 0;
+                left: 0;
+
+                svg {
+                    display: none;
+                }
+
+                .interactive {
+                    position: absolute;
+                    background: radial-gradient(
+                            circle at center,
+                            rgba(var(--color-interactive), 0.8) 0,
+                            rgba(var(--color-interactive), 0) 50%
+                        )
+                        no-repeat;
+                    mix-blend-mode: var(--blending);
+
+                    width: 50%;
+                    height: 50%;
+                    top: -20%;
+                    right: 50%;
+
+                    opacity: 0.15;
+                }
+            }
+
+            /* ----- Home ----- */
+            #home {
+                grid-template-rows: 0.75fr 2.7fr 1fr 0.3fr 2fr 0.2fr 0.3fr 0.75fr;
+                position: fixed; /* for no scroll */
+                display: grid;
+                width: 100%;
+                height: 100%;
+                z-index: 3;
+            }
+
+            .home-heading {
+                grid-area: 3 / 1 / 4 / -1;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+            }
+
+            .home-heading h1 {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 7vw;
+                letter-spacing: 3vw;
+                color: #caf0f8;
+                opacity: 0.7;
+                transition: font-size 0.5s ease-in-out,
+                    letter-spacing 0.5s ease-in-out;
+            }
+
+            .home-description {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                grid-area: 4 / 1 / 5 / -1;
+            }
+
+            .home-description p {
+                color: #caf0f8;
+                opacity: 0.6;
+                font-size: 1.2vw;
+                letter-spacing: 1.2vw;
+                transition: font-size 0.5s ease-in-out,
+                    letter-spacing 0.5s ease-in-out;
+            }
+
+            .home-description span {
+                font-size: 1vw;
+                opacity: 0.6;
+                color: #f8f9fa;
+                margin: 0 10vw;
+            }
+
+            .home-navigation {
+                transition: all 0.5s ease-in-out;
+                grid-area: 6 / 1 / 8 / -1;
+            }
+
+            .home-navigation-nav {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                justify-content: space-evenly;
+                align-items: center;
+            }
+
+            .home-navigation-anchor {
+                text-decoration: none;
+                color: #f8f9fa;
+                opacity: 0.6;
+                mix-blend-mode: difference;
+                font-size: 1.2vw;
+                letter-spacing: 0.4vw;
+                transition: font-size 0.5s ease-in-out,
+                    letter-spacing 0.5s ease-in-out;
+            }
+
+            .home-navigation-ul {
+                width: 100%;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                list-style: none;
+                padding: 0;
+                transition: all 0.5s ease-in-out;
+            }
+
+            .null-first {
+                grid-area: 2 / 1 / 3 / -1; /* row-start, col-start, row-end, col-end */
+            }
+
+            .null-second {
+                grid-area: 5 / 1 / 6 / -1;
+            }
+
+            .void-up {
+                grid-area: 1 / 1 / 2 / -1;
+                background-color: black;
+                z-index: 5;
+            }
+
+            .void-down {
+                grid-area: 8 / 1 / 9 / -1;
+                background-color: black;
+                z-index: 5;
+            }
+
+            /* ----- Music visualizer ----- */
+            .music-visualizer {
+                position: fixed;
+                width: 3rem;
+                height: 2rem;
+                top: 0.7rem;
+                right: 0.7rem;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: row;
+                gap: 0.5rem;
+                transition: all 0.5s ease-in-out;
+                cursor: pointer;
+                z-index: 20;
+            }
+
+            .wave {
+                width: 0.07rem;
+                height: 0.07rem;
+                background-color: #ecf8f8;
+                animation: none;
+                position: relative;
+                transition: all 0.5s ease-in-out;
+            }
+
+            @keyframes wave1 {
+                0% {
+                    transform: translateY(0rem);
+                }
+                25% {
+                    transform: translateY(0.4rem);
+                }
+                50% {
+                    transform: translateY(0rem);
+                }
+                75% {
+                    transform: translateY(-0.4rem);
+                }
+                100% {
+                    transform: translateY(0rem);
+                }
+            }
+            @keyframes wave2 {
+                0% {
+                    transform: translateY(0.4rem);
+                }
+                25% {
+                    transform: translateY(0rem);
+                }
+                50% {
+                    transform: translateY(-0.4rem);
+                }
+                75% {
+                    transform: translateY(0rem);
+                }
+                100% {
+                    transform: translateY(0.4rem);
+                }
+            }
+            @keyframes wave3 {
+                0% {
+                    transform: translateY(0rem);
+                }
+                25% {
+                    transform: translateY(-0.4rem);
+                }
+                50% {
+                    transform: translateY(0rem);
+                }
+                75% {
+                    transform: translateY(0.4rem);
+                }
+                100% {
+                    transform: translateY(0);
+                }
+            }
+            @keyframes wave4 {
+                0% {
+                    transform: translateY(-0.4rem);
+                }
+                25% {
+                    transform: translateY(0rem);
+                }
+                50% {
+                    transform: translateY(0.4rem);
+                }
+                75% {
+                    transform: translateY(0rem);
+                }
+                100% {
+                    transform: translateY(-0.4rem);
+                }
+            }
+            @keyframes wave5 {
+                0% {
+                    transform: translateY(0rem);
+                }
+                25% {
+                    transform: translateY(0.4rem);
+                }
+                50% {
+                    transform: translateY(0rem);
+                }
+                75% {
+                    transform: translateY(-0.4rem);
+                }
+                100% {
+                    transform: translateY(0rem);
+                }
+            }
+
+            .playing #wave1 {
+                animation: wave1 1s infinite linear;
+            }
+            .playing #wave2 {
+                animation: wave2 1s infinite linear;
+            }
+            .playing #wave3 {
+                animation: wave3 1s infinite linear;
+            }
+            .playing #wave4 {
+                animation: wave4 1s infinite linear;
+            }
+            .playing #wave5 {
+                animation: wave5 1s infinite linear;
+            }
+
+            /* ----- Responsive ----- */
+            /* 3xs */
+            @media (min-width: 200px) and (max-width: 319px) {
+                .inner-cursor {
+                    left: 0.2rem;
+                    width: 0.2rem;
+                    height: 0.2rem;
+                    box-shadow: 0 0 0.66px #f8f9fa, 0 0 13.33px #f8f9fa;
+                }
+
+                .inner-cursor.grow {
+                    width: 1rem;
+                    height: 1rem;
+                }
+
+                .outer-cursor {
+                    left: 0.2rem;
+                    width: 1rem;
+                    height: 1rem;
+                }
+
+                .home-heading h1 {
+                    font-size: 1rem;
+                    letter-spacing: 0.45rem;
+                }
+
+                .home-description p {
+                    font-size: 0.4rem;
+                    letter-spacing: 0.1rem;
+                }
+
+                .home-description span {
+                    margin: 0 0.8rem;
+                    font-size: 0.3rem;
+                }
+
+                .home-navigation-anchor {
+                    font-size: 0.5rem;
+                    letter-spacing: 0.03rem;
+                    margin: 0 0.2rem;
+                }
+
+                .void-up,
+                .void-down {
+                    background: transparent;
+                }
+            }
+
+            /* 2xs */
+            @media (min-width: 320px) and (max-width: 460px) {
+                .inner-cursor {
+                    left: 0.2rem;
+                    width: 0.2rem;
+                    height: 0.2rem;
+                    box-shadow: 0 0 0.66px #f8f9fa, 0 0 13.33px #f8f9fa;
+                }
+
+                .inner-cursor.grow {
+                    width: 1rem;
+                    height: 1rem;
+                }
+
+                .outer-cursor {
+                    left: 0.2rem;
+                    width: 1rem;
+                    height: 1rem;
+                }
+
+                .home-heading h1 {
+                    font-size: 1.5rem;
+                    letter-spacing: 0.6rem;
+                }
+
+                .home-description p {
+                    font-size: 0.6rem;
+                    letter-spacing: 0.2rem;
+                }
+
+                .home-description span {
+                    margin: 0 1rem;
+                    font-size: 0.4rem;
+                }
+
+                .home-navigation-anchor {
+                    font-size: 0.6rem;
+                    letter-spacing: 0.03rem;
+                    margin: 0 0.2rem;
+                }
+
+                .void-up,
+                .void-down {
+                    background: transparent;
+                }
+            }
+            /* xs */
+            @media (min-width: 461px) and (max-width: 595px) {
+                .inner-cursor {
+                    left: 0.2rem;
+                    width: 0.2rem;
+                    height: 0.2rem;
+                    box-shadow: 0 0 0.66px #f8f9fa, 0 0 13.33px #f8f9fa;
+                }
+
+                .inner-cursor.grow {
+                    width: 1rem;
+                    height: 1rem;
+                }
+
+                .outer-cursor {
+                    left: 0.2rem;
+                    width: 1rem;
+                    height: 1rem;
+                }
+
+                .home-heading h1 {
+                    font-size: 2.2rem;
+                    letter-spacing: 0.8rem;
+                }
+
+                .home-description p {
+                    letter-spacing: 0.5rem;
+                    font-size: 0.5rem;
+                }
+
+                .home-description span {
+                    margin: 0 1.8rem;
+                    font-size: 0.4rem;
+                }
+
+                .home-navigation-anchor {
+                    font-size: 0.6rem;
+                    letter-spacing: 0.1rem;
+                    margin: 0 1.5rem;
+                }
+
+                .void-up,
+                .void-down {
+                    background: transparent;
+                }
+            }
+
+            /* sm */
+            @media (min-width: 596px) and (max-width: 767px) {
+                .inner-cursor {
+                    left: 0.3rem;
+                    width: 0.3rem;
+                    height: 0.3rem;
+                    box-shadow: 0 0 0.66px #f8f9fa, 0 0 13.33px #f8f9fa;
+                }
+
+                .inner-cursor.grow {
+                    width: 1.5rem;
+                    height: 1.5rem;
+                }
+
+                .outer-cursor {
+                    left: 0.3rem;
+                    width: 1.5rem;
+                    height: 1.5rem;
+                }
+
+                .home-heading h1 {
+                    font-size: 3rem;
+                    letter-spacing: 1rem;
+                }
+
+                .home-description p {
+                    letter-spacing: 0.4rem;
+                    font-size: 0.8rem;
+                }
+
+                .home-description span {
+                    margin: 0 3rem;
+                    font-size: 0.6rem;
+                }
+
+                .home-navigation-anchor {
+                    font-size: 0.7rem;
+                    letter-spacing: 0.25rem;
+                    margin: 0 1.8rem;
+                }
+
+                .void-up,
+                .void-down {
+                    background-color: transparent;
+                }
+            }
+
+            /* md */
+            @media (min-width: 768px) and (max-width: 1023px) {
+                .inner-cursor {
+                    left: 0.3rem;
+                    width: 0.3rem;
+                    height: 0.3rem;
+                    box-shadow: 0 0 0.66px #f8f9fa, 0 0 13.33px #f8f9fa;
+                }
+
+                .inner-cursor.grow {
+                    width: 1.5rem;
+                    height: 1.5rem;
+                }
+
+                .outer-cursor {
+                    left: 0.3rem;
+                    width: 1.5rem;
+                    height: 1.5rem;
+                }
+
+                .home-heading h1 {
+                    letter-spacing: 1.1rem;
+                    font-size: 4rem;
+                }
+
+                .home-description p {
+                    letter-spacing: 0.7rem;
+                    font-size: 0.7rem;
+                }
+
+                .home-description span {
+                    margin: 0 4rem;
+                    font-size: 0.6rem;
+                }
+
+                .home-navigation-anchor {
+                    font-size: 0.8rem;
+                    letter-spacing: 0.4rem;
+                }
+            }
+
+            /* lg */
+            @media (min-width: 1024px) and (max-width: 1279px) {
+                .inner-cursor {
+                    left: 0.35rem;
+                    width: 0.35rem;
+                    height: 0.35rem;
+                    box-shadow: 0 0 0.66px #f8f9fa, 0 0 13.33px #f8f9fa;
+                }
+
+                .inner-cursor.grow {
+                    width: 2rem;
+                    height: 2rem;
+                }
+
+                .outer-cursor {
+                    left: 0.35rem;
+                    width: 2rem;
+                    height: 2rem;
+                }
+
+                .home-heading h1 {
+                    letter-spacing: 1.6rem;
+                    font-size: 5rem;
+                }
+
+                .home-description p {
+                    letter-spacing: 0.7rem;
+                    font-size: 0.8rem;
+                }
+
+                .home-description span {
+                    margin: 0 6.5rem;
+                    font-size: 0.8rem;
+                }
+
+                .home-navigation-anchor {
+                    font-size: 0.9rem;
+                    letter-spacing: 0.4rem;
+                    margin: 0 3.5rem;
+                }
+            }
+
+            /* xl */
+            @media (min-width: 1280px) and (max-width: 1550px) {
+                .inner-cursor {
+                    left: 0.4rem;
+                    width: 0.4rem;
+                    height: 0.4rem;
+                    box-shadow: 0 0 0.66px #f8f9fa, 0 0 13.33px #f8f9fa;
+                }
+
+                .inner-cursor.grow {
+                    width: 2.5rem;
+                    height: 2.5rem;
+                }
+
+                .outer-cursor {
+                    left: 0.4rem;
+                    width: 2.5rem;
+                    height: 2.5rem;
+                }
+
+                .home-heading h1 {
+                    font-size: 7rem;
+                    letter-spacing: 1.7rem;
+                }
+
+                .home-description p {
+                    letter-spacing: 0.8rem;
+                    font-size: 0.9rem;
+                }
+
+                .home-description span {
+                    margin: 0 10rem;
+                    font-size: 0.8rem;
+                }
+
+                .home-navigation-anchor {
+                    font-size: 1rem;
+                    letter-spacing: 0.4rem;
+                    margin: 0 5.5rem;
+                }
+            }
+
+            /* ----- Legacy hide and show ----- */
+            .hidden {
+                visibility: hidden;
+                overflow: hidden;
+            }
+
+            .hide {
+                transform: translate3d(0, 50%, 0) !important;
+                opacity: 0 !important;
+                transition: all 0.8s ease-in-out !important;
+            }
+        </style>
+
+        <!-- preload, onload and fallback CSS styles file -->
+        <link
+            rel="stylesheet"
+            href="./assets/styles-oB1XG3g2.css"
+            media="print"
+            onload="this.media='all'"
+        />
+        <noscript></noscript>
+
+        <!-- AOS -->
+        <link
+            rel="preload"
+            href="https://unpkg.com/aos@next/dist/aos.css"
+            as="style"
+        />
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/aos@next/dist/aos.css"
+            media="print"
+            onload="this.media='all'"
+        />
+        <noscript>
+            <link
+                rel="stylesheet"
+                href="https://unpkg.com/aos@next/dist/aos.css"
+            />
+        </noscript>
+        <link
+            rel="preload"
+            href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"
+            as="script"
+        />
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"
+            defer
+        ></script>
+
+        <!-- Threejs -->
+        <link
+            rel="preload"
+            href="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.165.0/three.module.min.js"
+            as="script"
+        />
+
+
+        <!-- GSAP -->
+        <link
+            rel="preload"
+            href="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+            as="script"
+        />
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+            defer
+        ></script>
+
+        <!-- Howler -->
+        <link
+            rel="preload"
+            href="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"
+            as="script"
+        />
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"
+            defer
+        ></script>
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.165.0/three.module.min.js"
+                }
+            }
+        </script>
+      <script type="module" crossorigin src="./assets/index-BtqmtC0_.js"></script>
+      <link rel="stylesheet" crossorigin href="./assets/index-ikdEea-1.css">
+    </head>
+
+    <body>
+        <!-- loader -->
+        <div id="loader">
+            <svg
+                id="loader-svg"
+                width="80%"
+                height="1"
+                preserveAspectRatio="none"
+            >
+                <line
+                    id="loader-line"
+                    x1="50%"
+                    y1="0.5"
+                    x2="50%"
+                    y2="0.5"
+                    stroke="rgba(255, 255, 255, 0.5)"
+                    stroke-width="0.5"
+                    stroke-linecap="round"
+                />
+            </svg>
+        </div>
+
+        <!-- background -->
+        <div class="background">
+            <div class="gradient-bg">
+                <svg xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <filter id="goo">
+                            <feGaussianBlur
+                                in="SourceGraphic"
+                                stdDeviation="10"
+                                result="blur"
+                            />
+                            <feColorMatrix
+                                in="blur"
+                                mode="matrix"
+                                values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -8"
+                                result="goo"
+                            />
+                            <feBlend in="SourceGraphic" in2="goo" />
+                        </filter>
+                    </defs>
+                </svg>
+                <div class="gradients-container">
+                    <div class="g1"></div>
+                    <div class="g2"></div>
+                    <div class="g3"></div>
+                    <div class="g4"></div>
+                    <div class="g5"></div>
+                    <div class="interactive"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- threejs canvas -->
+        <canvas id="webgl"></canvas>
+
+        <!-- cursor -->
+        <div class="inner-cursor"></div>
+        <div class="outer-cursor"></div>
+
+        <!-- music visualizer -->
+        <div class="music-visualizer clickable">
+            <div class="wave" id="wave1"></div>
+            <div class="wave" id="wave2"></div>
+            <div class="wave" id="wave3"></div>
+            <div class="wave" id="wave4"></div>
+            <div class="wave" id="wave5"></div>
+        </div>
+
+        <!-------------------------------- home ------------------------------------>
+        <div
+            id="home"
+            data-aos="fade-up"
+            data-aos-easing="ease-out"
+            data-aos-duration="200"
+        >
+            <!-- null and void -->
+            <div class="void-up"></div>
+
+            <div class="null-first"></div>
+
+            <!-- home heading -->
+            <div
+                class="home-heading"
+                data-aos="fade-down"
+                data-aos-easing="ease-out"
+                data-aos-duration="2000"
+            >
+                <h1>Anshu Sinha</h1>
+            </div>
+
+            <!-- home description -->
+            <div
+                class="home-description"
+                data-aos="fade-up"
+                data-aos-easing="ease-out"
+                data-aos-duration="2000"
+            >
+                <p>Vision</p>
+                <span>&cir;</span>
+                <p>Passion</p>
+                <span>&cir;</span>
+                <p>Creation</p>
+            </div>
+
+            <!-- navigation -->
+            <div class="home-navigation">
+                <nav class="home-navigation-nav">
+                    <ul class="home-navigation-ul">
+                        <li class="home-navigation-li">
+                            <a href="#project" class="home-navigation-anchor"
+                                >Project</a
+                            >
+                        </li>
+                        <li class="home-navigation-li">
+                            <a
+                                href="#certification"
+                                class="home-navigation-anchor"
+                                >Certification</a
+                            >
+                        </li>
+                        <li class="home-navigation-li">
+                            <a href="#insight" class="home-navigation-anchor"
+                                >Insight</a
+                            >
+                        </li>
+                        <li class="home-navigation-li">
+                            <a href="#link" class="home-navigation-anchor"
+                                >Link</a
+                            >
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- null and void -->
+            <div class="null-second"></div>
+            <div class="void-down"></div>
+        </div>
+
+        <!-------------------------------- project --------------------------------->
+        <div
+            id="project"
+            class="hidden"
+            data-aos="fade-down"
+            data-aos-easing="ease-out-sine"
+            data-aos-duration="200"
+        >
+            <!-- project navigation -->
+            <div class="project-navigation">
+                <nav class="project-navigation-nav">
+                    <!-- project navigation icon -->
+                    <div class="project-navigation-bar-icon clickable">
+                        <div class="up">
+                            <span class="up1"></span>
+                            <span class="up2"></span>
+                            <span class="up3"></span>
+                        </div>
+                        <div class="down">
+                            <span class="down1"></span>
+                            <span class="down2"></span>
+                            <span class="down3"></span>
+                        </div>
+                    </div>
+
+                    <!-- project navigation links -->
+                    <ul class="project-navigation-ul">
+                        <li class="project-navigation-li">
+                            <a href="#home" class="project-navigation-anchor"
+                                >Home</a
+                            >
+                        </li>
+                        <li class="project-navigation-li">
+                            <a
+                                href="#certification"
+                                class="project-navigation-anchor"
+                                >Certification</a
+                            >
+                        </li>
+                        <li class="project-navigation-li">
+                            <a href="#insight" class="project-navigation-anchor"
+                                >Insight</a
+                            >
+                        </li>
+                        <li class="project-navigation-li">
+                            <a href="#link" class="project-navigation-anchor"
+                                >Link</a
+                            >
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- project heading -->
+            <div
+                class="project-heading"
+                data-aos="zoom-out-up"
+                data-aos-easing="ease-out-sine"
+                data-aos-duration="2000"
+            >
+                <h1>Project</h1>
+            </div>
+
+            <!-- project description -->
+            <div
+                class="project-description"
+                data-aos="zoom-out-up"
+                data-aos-easing="ease-out-sine"
+                data-aos-duration="2000"
+            >
+                <p>Web/Mobile</p>
+                <span>&cir;</span>
+                <p>AI/ML</p>
+                <span>&cir;</span>
+                <p>Game/Graphics</p>
+            </div>
+
+            <!-- project project -->
+            <div
+                class="project-content"
+                data-aos="fade-down"
+                data-aos-easing="ease-out-sine"
+                data-aos-duration="600"
+            >
+                <!-- web / mobile -->
+                <div class="project-desc"><h2>Web / Mobile</h2></div>
+
+                <!-- ai enhanced search engine with gemini ai -->
+                <div data-aos="zoom-in-up" class="project-project">
+                    <div class="project">
+                        <img
+                            loading="lazy"
+                            src="./assets/ai_enhanced_search_engine_with_gemini_ai-aOs8gEZD.webp"
+                            alt="ai-enhanced-search-engine-with-gemini-ai"
+                            class="clickable"
+                        />
+                        <button class="close-project hidden clickable">
+                            &times;
+                        </button>
+                        <p>ai enhanced search engine with gemini ai</p>
+                        <ul>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://github.com/anshusinha26/Google-2.0"
+                                    class="clickable"
+                                    >source code</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- clima - ios weather app -->
+                <div data-aos="zoom-in-up" class="project-project">
+                    <div class="project">
+                        <img
+                            loading="lazy"
+                            src="./assets/clima_ios_weather_app-Do5wK_Dx.webp"
+                            alt="clima-ios-weather-app"
+                            class="clickable"
+                            style="height: 35vw"
+                        />
+                        <button class="close-project hidden clickable">
+                            &times;
+                        </button>
+                        <p>clima - ios weather app</p>
+                        <ul>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://github.com/anshusinha26/Clima-iOS-WeatherApp"
+                                    class="clickable"
+                                    >source code</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- natours website -->
+                <div data-aos="zoom-in-up" class="project-project">
+                    <div class="project">
+                        <img
+                            loading="lazy"
+                            src="./assets/natours_website-DjmVhZDj.webp"
+                            alt="natours website"
+                            class="clickable"
+                        />
+                        <button class="close-project hidden clickable">
+                            &times;
+                        </button>
+                        <p>Natours - Website</p>
+                        <ul>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://natours-anshusinha.netlify.app"
+                                    class="clickable"
+                                    >preview</a
+                                >
+                            </li>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://github.com/anshusinha26/Natours-Website"
+                                    class="clickable"
+                                    >source code</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- omnifood website -->
+                <div data-aos="zoom-in-up" class="project-project">
+                    <div class="project">
+                        <img
+                            loading="lazy"
+                            src="./assets/omnifood_website-aRLZduv_.webp"
+                            alt="omnifood website"
+                            class="clickable"
+                        />
+                        <button class="close-project hidden clickable">
+                            &times;
+                        </button>
+                        <p>Omnifood - Website</p>
+                        <ul>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://omnifood-anshu-sinha.netlify.app"
+                                    class="clickable"
+                                    >preview</a
+                                >
+                            </li>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://github.com/anshusinha26/Omnifood-Website"
+                                    class="clickable"
+                                    >source code</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- loopstudios website -->
+                <div data-aos="zoom-in-up" class="project-project">
+                    <div class="project">
+                        <img
+                            loading="lazy"
+                            src="./assets/loopstudios_website-D-VMGZ9N.webp"
+                            alt="loopstudios website"
+                            class="clickable"
+                        />
+                        <button class="close-project hidden clickable">
+                            &times;
+                        </button>
+                        <p>Loopstudios - Website</p>
+                        <ul>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://loopstudios-anshusinha.netlify.app"
+                                    class="clickable"
+                                    >preview</a
+                                >
+                            </li>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://github.com/anshusinha26/Loopstudios-Website"
+                                    class="clickable"
+                                    >source code</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- family travel tracker  -->
+                <div data-aos="zoom-in-up" class="project-project">
+                    <div class="project">
+                        <img
+                            loading="lazy"
+                            src="./assets/family_travel_tracker-D8YpV0tu.webp"
+                            alt="family-travel-tracker"
+                            class="clickable"
+                        />
+                        <button class="close-project hidden clickable">
+                            &times;
+                        </button>
+                        <p>family travel tracker</p>
+                        <ul>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://github.com/anshusinha26/Family-Travel-Tracker"
+                                    class="clickable"
+                                    >source code</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- galactic credits union -->
+                <div data-aos="zoom-in-up" class="project-project">
+                    <div class="project">
+                        <img
+                            loading="lazy"
+                            src="./assets/galactic_credits_union-DuLT3Dra.webp"
+                            alt="galactic-credits-union"
+                            class="clickable"
+                        />
+                        <button class="close-project hidden clickable">
+                            &times;
+                        </button>
+                        <p>galactic credits union</p>
+                        <!-- <details>
+                            <summary>username and password</summary>
+                            <p>first : 1111</p>
+                            <p>second : 2222</p>
+                            <p>third : 3333</p>
+                            <p>fourth : 4444</p>
+                        </details> -->
+                        <ul>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://anshusinha26.github.io/Galactic-Credits-Union"
+                                    class="clickable"
+                                    >preview</a
+                                >
+                            </li>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://github.com/anshusinha26/Galactic-Credits-Union-App"
+                                    class="clickable"
+                                    >source code</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- personal site -->
+                <div data-aos="zoom-in-up" class="project-project">
+                    <div class="project">
+                        <img
+                            loading="lazy"
+                            src="./assets/personal_site-DKjPX6_i.webp"
+                            alt="personal-site"
+                            class="clickable"
+                        />
+                        <button class="close-project hidden clickable">
+                            &times;
+                        </button>
+                        <p>personal site - experimental</p>
+                        <ul>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://anshusinha26.github.io/Personal-Site"
+                                    class="clickable"
+                                    >preview</a
+                                >
+                            </li>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://github.com/anshusinha26/Personal-Site"
+                                    class="clickable"
+                                    >source code</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <hr />
+
+                <!-- ai / ml -->
+                <div class="project-desc"><h2>AI / ML</h2></div>
+
+                <!-- analyse deaths involving police in the US -->
+                <div data-aos="zoom-in-up" class="project-project">
+                    <div class="project">
+                        <img
+                            loading="lazy"
+                            src="./assets/analyse_deaths_involving_police_in_the_US-6Cpds3uk.webp"
+                            alt="analyse-deaths-involving-police-in-the-US"
+                            class="clickable"
+                        />
+                        <button class="close-project hidden clickable">
+                            &times;
+                        </button>
+                        <p>deaths involving police in the us</p>
+                        <ul>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://github.com/anshusinha26/Analyse-Deaths-Involving-Police-in-the-US"
+                                    class="clickable"
+                                    >source code</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- titanic disaster analysis -->
+                <div data-aos="zoom-in-up" class="project-project">
+                    <div class="project">
+                        <img
+                            loading="lazy"
+                            src="./assets/titanic_disaster_analysis-Bs9W-8AA.webp"
+                            alt="titanic-disaster-analysis"
+                            class="clickable"
+                        />
+                        <button class="close-project hidden clickable">
+                            &times;
+                        </button>
+                        <p>titanic disaster analysis</p>
+                        <ul>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://github.com/anshusinha26/Titanic-Disaster-Analysis"
+                                    class="clickable"
+                                    >source code</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- digit recognizer -->
+                <div data-aos="zoom-in-up" class="project-project">
+                    <div class="project">
+                        <img
+                            loading="lazy"
+                            src="./assets/digit_recognizer-BbeK7j6o.webp"
+                            alt="digit-recognizer"
+                            class="clickable"
+                        />
+                        <button class="close-project hidden clickable">
+                            &times;
+                        </button>
+                        <p>digit recognizer</p>
+                        <ul>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://github.com/anshusinha26/Digit-Recognizer"
+                                    class="clickable"
+                                    >source code</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- predict house prices -->
+                <div data-aos="zoom-in-up" class="project-project">
+                    <div class="project">
+                        <img
+                            loading="lazy"
+                            src="./assets/predict_house_prices-Bk5BC7D_.webp"
+                            alt="predict-house-prices"
+                            class="clickable"
+                        />
+                        <button class="close-project hidden clickable">
+                            &times;
+                        </button>
+                        <p>predict house prices</p>
+                        <ul>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://github.com/anshusinha26/Predict-House-Prices"
+                                    class="clickable"
+                                    >source code</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- popularity of different programming languages over time -->
+                <div data-aos="zoom-in-up" class="project-project">
+                    <div class="project">
+                        <img
+                            loading="lazy"
+                            src="./assets/analysing_the%20popularity_of_different_programming_languages_over_time-DYzOYSwD.webp"
+                            alt="analysing-the-popularity-of-different-programming-languages-over-time"
+                            class="clickable"
+                        />
+                        <button class="close-project hidden clickable">
+                            &times;
+                        </button>
+                        <p>popularity analysis of programming languages</p>
+                        <ul>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://github.com/anshusinha26/Popularity-Analysis-Of-Different-Programming-Languages-Over-Time"
+                                    class="clickable"
+                                    >source code</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <hr />
+
+                <!-- game / graphics -->
+                <div class="project-desc"><h2>Game / Graphics</h2></div>
+
+                <!-- lighthouse -->
+                <div data-aos="zoom-in-up" class="project-project">
+                    <div class="project">
+                        <img
+                            loading="lazy"
+                            src="./assets/light_house-DzpgradX.webp"
+                            alt="light-house"
+                            class="clickable"
+                        />
+                        <button class="close-project hidden clickable">
+                            &times;
+                        </button>
+                        <p>light house - blender</p>
+                        <ul>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://github.com/anshusinha26/Blender-Creations"
+                                    class="clickable"
+                                    >source code</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- dungeon -->
+                <div data-aos="zoom-in-up" class="project-project">
+                    <div class="project">
+                        <img
+                            loading="lazy"
+                            src="./assets/dungeon-a2U0KM9e.webp"
+                            alt="dungeon"
+                            class="clickable"
+                        />
+                        <button class="close-project hidden clickable">
+                            &times;
+                        </button>
+                        <p>dungeon - blender</p>
+                        <ul>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://github.com/anshusinha26/Blender-Creations"
+                                    class="clickable"
+                                    >source code</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- dinosaur -->
+                <div data-aos="zoom-in-up" class="project-project">
+                    <div class="project">
+                        <img
+                            loading="lazy"
+                            src="./assets/dinosaur-q1SEM5Mz.webp"
+                            alt="dinosaur"
+                            class="clickable"
+                        />
+                        <button class="close-project hidden clickable">
+                            &times;
+                        </button>
+                        <p>dinosaur - blender</p>
+                        <ul>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://github.com/anshusinha26/Blender-Creations"
+                                    class="clickable"
+                                    >source code</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- blackhole -->
+                <div data-aos="zoom-in-up" class="project-project">
+                    <div class="project">
+                        <img
+                            loading="lazy"
+                            src="./assets/blackhole-B8jHT6lK.webp"
+                            alt="blackhole"
+                            class="clickable"
+                        />
+                        <button class="close-project hidden clickable">
+                            &times;
+                        </button>
+                        <p>blackhole - blender</p>
+                        <ul>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://github.com/anshusinha26/Blender-Creations"
+                                    class="clickable"
+                                    >source code</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- house -->
+                <div data-aos="zoom-in-up" class="project-project">
+                    <div class="project">
+                        <img
+                            loading="lazy"
+                            src="./assets/house-BGxPijT2.webp"
+                            alt="house"
+                            class="clickable"
+                        />
+                        <button class="close-project hidden clickable">
+                            &times;
+                        </button>
+                        <p>house - blender</p>
+                        <ul>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://github.com/anshusinha26/Blender-Creations"
+                                    class="clickable"
+                                    >source code</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- well  -->
+                <div data-aos="zoom-in-up" class="project-project">
+                    <div class="project">
+                        <img
+                            loading="lazy"
+                            src="./assets/well-C0KnoZEp.webp"
+                            alt="well"
+                            class="clickable"
+                        />
+                        <button class="close-project hidden clickable">
+                            &times;
+                        </button>
+                        <p>well - blender</p>
+                        <ul>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://github.com/anshusinha26/Blender-Creations"
+                                    class="clickable"
+                                    >source code</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- impostor -->
+                <div data-aos="zoom-in-up" class="project-project">
+                    <div class="project">
+                        <img
+                            loading="lazy"
+                            src="./assets/impostor-LsIQi33s.webp"
+                            alt="impostor"
+                            class="clickable"
+                        />
+                        <button class="close-project hidden clickable">
+                            &times;
+                        </button>
+                        <p>impostor - blender</p>
+                        <ul>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://github.com/anshusinha26/Blender-Creations"
+                                    class="clickable"
+                                    >source code</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- delivery driver -->
+                <div data-aos="zoom-in-up" class="project-project">
+                    <div class="project">
+                        <img
+                            loading="lazy"
+                            src="./assets/delivery_driver-Q3fC-pS7.webp"
+                            alt="delivery-driver"
+                            class="clickable"
+                        />
+                        <button class="close-project hidden clickable">
+                            &times;
+                        </button>
+                        <p>delivery driver - unity2d</p>
+                        <ul>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://anshusinha26.github.io/Delivery-Driver"
+                                    class="clickable"
+                                    >preview</a
+                                >
+                            </li>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://github.com/anshusinha26/Delivery-Driver"
+                                    class="clickable"
+                                    >source code</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- snow boarder -->
+                <div data-aos="zoom-in-up" class="project-project">
+                    <div class="project">
+                        <img
+                            loading="lazy"
+                            src="./assets/snow_boarder-7kDkGWc9.webp"
+                            alt="snow-boarder"
+                            class="clickable"
+                        />
+                        <button class="close-project hidden clickable">
+                            &times;
+                        </button>
+                        <p>snow boarder - unity2d</p>
+                        <ul>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://anshusinha26.github.io/Snow-Boarder"
+                                    class="clickable"
+                                    >preview</a
+                                >
+                            </li>
+                            <li>
+                                <a
+                                    target="_blank"
+                                    href="https://github.com/anshusinha26/Snow-Boarder"
+                                    class="clickable"
+                                    >source code</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- more on github -->
+                <div
+                    data-aos="zoom-in-up"
+                    style="
+                        width: 100%;
+                        height: 15vw;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    "
+                >
+                    <a
+                        style="
+                            text-decoration: none;
+                            color: #f8f9fa;
+                            cursor: pointer;
+                            border: 1px solid #f8f9fa;
+                            padding: 0.7vw 2vw;
+                        "
+                        href="https://github.com/anshusinha26"
+                        target="_blank"
+                        class="clickable"
+                        >More on my github...</a
+                    >
+                </div>
+
+                <!-- bottom-spacer -->
+                <div class="project-project-bottom-spacer"></div>
+            </div>
+        </div>
+
+        <!-------------------------------- certification --------------------------->
+        <div
+            id="certification"
+            class="hidden"
+            data-aos="fade-down"
+            data-aos-easing="ease-out-sine"
+            data-aos-duration="200"
+        >
+            <!-- certification navigation -->
+            <div class="cert-navigation">
+                <nav class="cert-navigation-nav">
+                    <!-- certification navigation icon -->
+                    <div class="cert-navigation-bar-icon clickable">
+                        <div class="up">
+                            <span class="up1"></span>
+                            <span class="up2"></span>
+                            <span class="up3"></span>
+                        </div>
+                        <div class="down">
+                            <span class="down1"></span>
+                            <span class="down2"></span>
+                            <span class="down3"></span>
+                        </div>
+                    </div>
+
+                    <!-- certification navigation links -->
+                    <ul class="cert-navigation-ul">
+                        <li class="cert-navigation-li">
+                            <a href="#home" class="cert-navigation-anchor"
+                                >Home</a
+                            >
+                        </li>
+                        <li class="cert-navigation-li">
+                            <a href="#project" class="cert-navigation-anchor"
+                                >Project</a
+                            >
+                        </li>
+                        <li class="cert-navigation-li">
+                            <a href="#insight" class="cert-navigation-anchor"
+                                >Insight</a
+                            >
+                        </li>
+                        <li class="cert-navigation-li">
+                            <a href="#link" class="cert-navigation-anchor"
+                                >Link</a
+                            >
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- certification heading -->
+            <div
+                class="cert-heading"
+                data-aos="zoom-out-up"
+                data-aos-easing="ease-out-sine"
+                data-aos-duration="2000"
+            >
+                <h1>Certification</h1>
+            </div>
+
+            <!-- certification description -->
+            <div
+                class="cert-description"
+                data-aos="zoom-out-up"
+                data-aos-easing="ease-out-sine"
+                data-aos-duration="2000"
+            >
+                <p>Course</p>
+                <span>&cir;</span>
+                <p>Organization</p>
+                <span>&cir;</span>
+                <p>Platform</p>
+            </div>
+
+            <!-- certification project -->
+            <div
+                class="cert-content"
+                data-aos="fade-down"
+                data-aos-easing="ease-out-sine"
+                data-aos-duration="600"
+            >
+                <!-- harvard -->
+                <div data-aos="zoom-in-up" class="cert-project">
+                    <div class="cert-inner">
+                        <button class="close-cert hidden clickable">
+                            &times;
+                        </button>
+                        <img
+                            loading="lazy"
+                            src="./assets/CS50T%20-%20Harvard-gOw_5kX6.webp"
+                            alt="harvard-cs50"
+                            class="clickable"
+                        />
+                        <p>cs50 - harvard</p>
+                    </div>
+                </div>
+
+                <!-- coursera -->
+                <div data-aos="zoom-in-up" class="cert-project">
+                    <div class="cert-inner">
+                        <button class="close-cert hidden clickable">
+                            &times;
+                        </button>
+                        <img
+                            loading="lazy"
+                            src="./assets/Google%20IT%20automation%20with%20python-CG8bavxN.webp"
+                            alt="google-it-automation"
+                            class="clickable"
+                        />
+                        <p>it automation - google</p>
+                    </div>
+                </div>
+                <div data-aos="zoom-in-up" class="cert-project">
+                    <div class="cert-inner">
+                        <button class="close-cert hidden clickable">
+                            &times;
+                        </button>
+                        <img
+                            loading="lazy"
+                            src="./assets/Introduction%20to%20front-end%20development-wFkprS-d.webp"
+                            alt="meta-frontend"
+                            class="clickable"
+                        />
+                        <p>frontend development - meta</p>
+                    </div>
+                </div>
+                <div data-aos="zoom-in-up" class="cert-project">
+                    <div class="cert-inner">
+                        <button class="close-cert hidden clickable">
+                            &times;
+                        </button>
+                        <img
+                            loading="lazy"
+                            src="./assets/Linear_algebra_for_machine_learing_and_data_science-CvdPH-EM.webp"
+                            alt="dl.ai-linear-algebra-for-ml"
+                            class="clickable"
+                        />
+                        <p>linear algebra for ml - deeplearning.ai</p>
+                    </div>
+                </div>
+
+                <!-- kaggle -->
+                <div data-aos="zoom-in-up" class="cert-project">
+                    <div class="cert-inner">
+                        <button class="close-cert hidden clickable">
+                            &times;
+                        </button>
+                        <img
+                            loading="lazy"
+                            src="./assets/Intro_to_programming-CaZYb8MS.webp"
+                            alt="kaggle-intro-to-programming"
+                            class="clickable"
+                        />
+                        <p>intro to programming - kaggle</p>
+                    </div>
+                </div>
+                <div data-aos="zoom-in-up" class="cert-project">
+                    <div class="cert-inner">
+                        <button class="close-cert hidden clickable">
+                            &times;
+                        </button>
+                        <img
+                            loading="lazy"
+                            src="./assets/Python-SnGpNkBu.webp"
+                            alt="kaggle-python"
+                            class="clickable"
+                        />
+                        <p>python - kaggle</p>
+                    </div>
+                </div>
+                <div data-aos="zoom-in-up" class="cert-project">
+                    <div class="cert-inner">
+                        <button class="close-cert hidden clickable">
+                            &times;
+                        </button>
+                        <img
+                            loading="lazy"
+                            src="./assets/Pandas-Cem8CpXe.webp"
+                            alt="kaggle-pandas"
+                            class="clickable"
+                        />
+                        <p>pandas - kaggle</p>
+                    </div>
+                </div>
+                <div data-aos="zoom-in-up" class="cert-project">
+                    <div class="cert-inner">
+                        <button class="close-cert hidden clickable">
+                            &times;
+                        </button>
+                        <img
+                            loading="lazy"
+                            src="./assets/Machine_learning-BSEasHKF.webp"
+                            alt="kaggle-ml"
+                            class="clickable"
+                        />
+                        <p>machine learning - kaggle</p>
+                    </div>
+                </div>
+                <div data-aos="zoom-in-up" class="cert-project">
+                    <div class="cert-inner">
+                        <button class="close-cert hidden clickable">
+                            &times;
+                        </button>
+                        <img
+                            loading="lazy"
+                            src="./assets/Intermediate_machine_learning-BXow4oD9.webp"
+                            alt="kaggle-inter-ml"
+                            class="clickable"
+                        />
+                        <p>intermediate machine learning - kaggle</p>
+                    </div>
+                </div>
+                <div data-aos="zoom-in-up" class="cert-project">
+                    <div class="cert-inner">
+                        <button class="close-cert hidden clickable">
+                            &times;
+                        </button>
+                        <img
+                            loading="lazy"
+                            src="./assets/Data_Visualization-UZAJDuRM.webp"
+                            alt="kaggle-dv"
+                            class="clickable"
+                        />
+                        <p>data visualization - kaggle</p>
+                    </div>
+                </div>
+
+                <!-- udemy -->
+                <div data-aos="zoom-in-up" class="cert-project">
+                    <div class="cert-inner">
+                        <button class="close-cert hidden clickable">
+                            &times;
+                        </button>
+                        <img
+                            loading="lazy"
+                            src="./assets/100%20Days%20Of%20Code%20-%20The%20Complete%20Python%20Pro%20Bootcamp-pEhUJCoe.webp"
+                            alt="udemy-c++"
+                            class="clickable"
+                        />
+                        <p>python pro bootcamp - udemy</p>
+                    </div>
+                </div>
+                <div data-aos="zoom-in-up" class="cert-project">
+                    <div class="cert-inner">
+                        <button class="close-cert hidden clickable">
+                            &times;
+                        </button>
+                        <img
+                            loading="lazy"
+                            src="./assets/The%20Complete%20Web%20Development%20Bootcamp-OCU6iGkc.webp"
+                            alt="udemy-c++"
+                            class="clickable"
+                        />
+                        <p>web development bootcamp - udemy</p>
+                    </div>
+                </div>
+                <div data-aos="zoom-in-up" class="cert-project">
+                    <div class="cert-inner">
+                        <button class="close-cert hidden clickable">
+                            &times;
+                        </button>
+                        <img
+                            loading="lazy"
+                            src="./assets/Build%20responsive%20real-world%20websites%20with%20html%20and%20css-1PDEZ7q7.webp"
+                            alt="udemy-c++"
+                            class="clickable"
+                        />
+                        <p>html and css - udemy</p>
+                    </div>
+                </div>
+                <div data-aos="zoom-in-up" class="cert-project">
+                    <div class="cert-inner">
+                        <button class="close-cert hidden clickable">
+                            &times;
+                        </button>
+                        <img
+                            loading="lazy"
+                            src="./assets/Advanced%20CSS%20and%20Sass%20-%20Flexbox_%20Grid_%20Animations%20and%20More!-C5rlrYPL.webp"
+                            alt="udemy-c++"
+                            class="clickable"
+                        />
+                        <p>advanced css and sass - udemy</p>
+                    </div>
+                </div>
+                <div data-aos="zoom-in-up" class="cert-project">
+                    <div class="cert-inner">
+                        <button class="close-cert hidden clickable">
+                            &times;
+                        </button>
+                        <img
+                            loading="lazy"
+                            src="./assets/Th%20Complete%20JavaScript%20Course%20-%20From%20Zero%20to%20Expert-BgVd5ntI.webp"
+                            alt="udemy-c++"
+                            class="clickable"
+                        />
+                        <p>javascript - udemy</p>
+                    </div>
+                </div>
+                <div data-aos="zoom-in-up" class="cert-project">
+                    <div class="cert-inner">
+                        <button class="close-cert hidden clickable">
+                            &times;
+                        </button>
+                        <img
+                            loading="lazy"
+                            src="./assets/Tailwind%20CSS%20From%20Scratch-D4GwcvHh.webp"
+                            alt="udemy-c++"
+                            class="clickable"
+                        />
+                        <p>tailwind css - udemy</p>
+                    </div>
+                </div>
+                <div data-aos="zoom-in-up" class="cert-project">
+                    <div class="cert-inner">
+                        <button class="close-cert hidden clickable">
+                            &times;
+                        </button>
+                        <img
+                            loading="lazy"
+                            src="./assets/Beginning%20C__%20programming%20-%20from%20beginner%20to%20beyond%20-BB4q3IKe.webp"
+                            alt="udemy-c++"
+                            class="clickable"
+                        />
+                        <p>c++ programming - udemy</p>
+                    </div>
+                </div>
+                <div data-aos="zoom-in-up" class="cert-project">
+                    <div class="cert-inner">
+                        <button class="close-cert hidden clickable">
+                            &times;
+                        </button>
+                        <img
+                            loading="lazy"
+                            src="./assets/The%20git%20and%20github%20bootcamp%20-%20Colt%20Steele-DWCldkyE.webp"
+                            alt="udemy-vc"
+                            class="clickable"
+                        />
+                        <p>git and github - udemy</p>
+                    </div>
+                </div>
+                <div data-aos="zoom-in-up" class="cert-project">
+                    <div class="cert-inner">
+                        <button class="close-cert hidden clickable">
+                            &times;
+                        </button>
+                        <img
+                            loading="lazy"
+                            src="./assets/ML-Kirill%20Eremenko-CyuRJd2X.webp"
+                            alt="udemy-ml"
+                            class="clickable"
+                        />
+                        <p>machine learning - udemy</p>
+                    </div>
+                </div>
+
+                <!-- matlab -->
+                <div data-aos="zoom-in-up" class="cert-project">
+                    <div class="cert-inner">
+                        <button class="close-cert hidden clickable">
+                            &times;
+                        </button>
+                        <img
+                            loading="lazy"
+                            src="./assets/MATLAB%20onramp%20certificate-1-DUFCBB93.webp"
+                            alt="matlab1"
+                            class="clickable"
+                        />
+                        <p>matlab onramp</p>
+                    </div>
+                </div>
+
+                <!-- bottom-spacer -->
+                <div class="cert-project-bottom-spacer"></div>
+            </div>
+        </div>
+
+        <!-------------------------------- insight --------------------------------->
+        <div
+            id="insight"
+            class="hidden"
+            data-aos="fade-down"
+            data-aos-easing="ease-out-sine"
+            data-aos-duration="200"
+        >
+            <!-- insight navigation -->
+            <div class="insight-navigation">
+                <nav class="insight-navigation-nav">
+                    <!-- insight navigation icon -->
+                    <div class="insight-navigation-bar-icon clickable">
+                        <div class="up">
+                            <span class="up1"></span>
+                            <span class="up2"></span>
+                            <span class="up3"></span>
+                        </div>
+                        <div class="down">
+                            <span class="down1"></span>
+                            <span class="down2"></span>
+                            <span class="down3"></span>
+                        </div>
+                    </div>
+
+                    <!-- Insight navigation links -->
+                    <ul class="insight-navigation-ul">
+                        <li class="insight-navigation-li">
+                            <a href="#home" class="insight-navigation-anchor"
+                                >Home</a
+                            >
+                        </li>
+                        <li class="insight-navigation-li">
+                            <a href="#project" class="insight-navigation-anchor"
+                                >Project</a
+                            >
+                        </li>
+                        <li class="insight-navigation-li">
+                            <a
+                                href="#certification"
+                                class="insight-navigation-anchor"
+                                >Certification</a
+                            >
+                        </li>
+                        <li class="insight-navigation-li">
+                            <a href="#link" class="insight-navigation-anchor"
+                                >Link</a
+                            >
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- insight heading -->
+            <div
+                class="insight-heading"
+                data-aos="zoom-out-up"
+                data-aos-easing="ease-out-sine"
+                data-aos-duration="2000"
+            >
+                <h1>Insight</h1>
+            </div>
+
+            <!-- insight description -->
+            <div
+                class="insight-description"
+                data-aos="zoom-out-up"
+                data-aos-easing="ease-out-sine"
+                data-aos-duration="2000"
+            >
+                <p>Me</p>
+                <span>&cir;</span>
+                <p>About</p>
+                <span>&cir;</span>
+                <p>Skills</p>
+            </div>
+
+            <!-- insight content -->
+            <div
+                class="insight-content"
+                data-aos="fade-down"
+                data-aos-easing="ease-out-sine"
+                data-aos-duration="600"
+            >
+                <!-- me -->
+                <div class="project-desc">
+                    <h2>Me</h2>
+                </div>
+
+                <div
+                    data-aos="zoom-in-up"
+                    class="insight-project main-para-div"
+                    style="text-align: center"
+                >
+                    <p class="main-para" style="color: #f8f9fa">
+                        Creative Technologist | Transforming Ideas into Reality
+                    </p>
+                </div>
+
+                <div
+                    data-aos="zoom-in-up"
+                    class="insight-project main-image-div"
+                >
+                    <img
+                        loading="lazy"
+                        class="main-image"
+                        src="./assets/mine-DHJ1oNS_.webp"
+                        alt="main-image"
+                    />
+                </div>
+
+                <hr />
+
+                <!-- about -->
+                <div class="project-desc">
+                    <h2>About</h2>
+                </div>
+
+                <div
+                    data-aos="zoom-in-up"
+                    class="insight-project main-para-div"
+                >
+                    <p class="main-para">
+                        <b class="name-highlight">Anshu Sinha</b> is a versatile
+                        and innovative developer with a passion for exploring
+                        cutting-edge technologies. With a strong foundation in
+                        computer science and a creative mindset, he thrives on
+                        solving complex problems and crafting impactful
+                        solutions. <b class="name-highlight">Anshu</b> is deeply
+                        driven by curiosity and a commitment to continuous
+                        learning, making him an adaptable and forward-thinking
+                        professional in the ever-evolving tech landscape.
+                    </p>
+                </div>
+                <hr />
+
+                <!-- skills -->
+                <div class="project-desc">
+                    <h2>Skills</h2>
+                </div>
+
+                <div
+                    data-aos="zoom-in-up"
+                    class="insight-project main-para-div"
+                >
+                    <div class="main-para skills-div">
+                        <div>
+                            - PROGRAMMING LANGUAGES:
+                            <br /><br />
+                            Python • JavaScript • Swift • C/C++ • C#
+                        </div>
+                        <div>
+                            - WEB TECHNOLOGIES:
+                            <br /><br />
+                            HTML • CSS • Sass • Tailwind CSS • Bootstrap •
+                            Node.js • Express.js • React.js • Three.js • jQuery
+                        </div>
+                        <div>
+                            - DATABASE TECHNOLOGIES:
+                            <br /><br />
+                            SQL (MySQL, PostgreSQL)
+                        </div>
+                        <div>
+                            - VERSION CONTROL:
+                            <br /><br />
+                            Git • Github
+                        </div>
+                        <div>
+                            - DATA SCIENCE TOOLS:
+                            <br /><br />
+                            Pandas • NumPy • Scikit-learn • Matplotlib • Seaborn
+                            • Plotly
+                        </div>
+                        <div>
+                            - GRAPHICS & GAME DEVELOPMENT:
+                            <br /><br />
+                            Blender • Unity (2D/3D) • Adobe Photoshop
+                        </div>
+                        <div>
+                            - DEVELOPER TOOLS:
+                            <br /><br />
+                            VS Code • PyCharm • Xcode
+                        </div>
+                    </div>
+                </div>
+
+                <div class="insight-project-bottom-spacer"></div>
+            </div>
+        </div>
+
+        <!-------------------------------- link ------------------------------------>
+        <div
+            id="link"
+            class="hidden"
+            data-aos="fade-down"
+            data-aos-easing="ease-out-sine"
+            data-aos-duration="200"
+        >
+            <!-- link navigation -->
+            <div class="link-navigation">
+                <nav class="link-navigation-nav">
+                    <!-- link navigation icon -->
+                    <div class="link-navigation-bar-icon clickable">
+                        <div class="up">
+                            <span class="up1"></span>
+                            <span class="up2"></span>
+                            <span class="up3"></span>
+                        </div>
+                        <div class="down">
+                            <span class="down1"></span>
+                            <span class="down2"></span>
+                            <span class="down3"></span>
+                        </div>
+                    </div>
+
+                    <!-- link navigation links -->
+                    <ul class="link-navigation-ul">
+                        <li class="link-navigation-li">
+                            <a href="#home" class="link-navigation-anchor"
+                                >Home</a
+                            >
+                        </li>
+                        <li class="link-navigation-li">
+                            <a href="#project" class="link-navigation-anchor"
+                                >Project</a
+                            >
+                        </li>
+                        <li class="link-navigation-li">
+                            <a
+                                href="#certification"
+                                class="link-navigation-anchor"
+                                >Certification</a
+                            >
+                        </li>
+                        <li class="link-navigation-li">
+                            <a href="#insight" class="link-navigation-anchor"
+                                >Insight</a
+                            >
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- link heading -->
+            <div
+                class="link-heading"
+                data-aos="zoom-out-up"
+                data-aos-easing="ease-out-sine"
+                data-aos-duration="2000"
+            >
+                <h1>Link</h1>
+            </div>
+
+            <!-- link description -->
+            <div
+                class="link-description"
+                data-aos="zoom-out-up"
+                data-aos-easing="ease-out-sine"
+                data-aos-duration="2000"
+            >
+                <p>Connect</p>
+                <span>&cir;</span>
+                <p>Network</p>
+                <span>&cir;</span>
+                <p>Collaborate</p>
+            </div>
+
+            <!-- links to sites -->
+            <div
+                class="link-content"
+                data-aos="fade-down"
+                data-aos-easing="ease-out-sine"
+                data-aos-duration="600"
+            >
+                <!-- linkedin -->
+                <div data-aos="zoom-in-up" class="link-project linkedin">
+                    <div class="link-inner">
+                        <a
+                            href="https://www.linkedin.com/in/anshusinha26/"
+                            target="_blank"
+                            ><img
+                                loading="lazy"
+                                src="data:image/webp;base64,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"
+                                alt="linkedin-image"
+                                class="clickable"
+                        /></a>
+                    </div>
+                </div>
+
+                <!-- github -->
+                <div data-aos="zoom-in-up" class="link-project github">
+                    <div class="link-inner">
+                        <a
+                            href="https://github.com/anshusinha26"
+                            target="_blank"
+                        >
+                            <img
+                                loading="lazy"
+                                src="./assets/github-CpGf9Bbj.webp"
+                                alt="github-image"
+                                class="clickable"
+                        /></a>
+                    </div>
+                </div>
+
+                <!-- leetcode -->
+                <div data-aos="zoom-in-up" class="link-project leetcode">
+                    <div class="link-inner">
+                        <a href="https://leetcode.com/u/AuSa/" target="_blank"
+                            ><img
+                                loading="lazy"
+                                src="./assets/leetcode-Cmy11aPG.webp"
+                                alt="leetcode-image"
+                                class="clickable"
+                        /></a>
+                    </div>
+                </div>
+
+                <!-- coding-ninjas -->
+                <div data-aos="zoom-in-up" class="link-project coding-ninjas">
+                    <div class="link-inner">
+                        <a
+                            href="https://www.naukri.com/code360/profile/anshusinha26"
+                            target="_blank"
+                            ><img
+                                loading="lazy"
+                                src="./assets/coding-ninjas-BzgizE2d.webp"
+                                alt="coding-ninjas-image"
+                                class="clickable"
+                        /></a>
+                    </div>
+                </div>
+
+                <!-- kaggle -->
+                <div data-aos="zoom-in-up" class="link-project kaggle">
+                    <div class="link-inner">
+                        <a
+                            href="https://www.kaggle.com/anshusinha26"
+                            target="_blank"
+                            ><img
+                                loading="lazy"
+                                src="data:image/webp;base64,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"
+                                alt="kaggle-image"
+                                class="clickable"
+                        /></a>
+                    </div>
+                </div>
+
+                <!-- x -->
+                <div data-aos="zoom-in-up" class="link-project x">
+                    <div class="link-inner">
+                        <a
+                            href="https://twitter.com/anshusinha_26"
+                            target="_blank"
+                            ><img
+                                loading="lazy"
+                                src="./assets/x-DSfe7rqO.webp"
+                                alt="x-image"
+                                class="clickable"
+                        /></a>
+                    </div>
+                </div>
+
+                <!-- email -->
+                <div data-aos="zoom-in-up" class="link-project email">
+                    <div class="link-inner">
+                        <a href="mailto:anshujuly2@gmail.com">
+                            <img
+                                loading="lazy"
+                                src="./assets/email-Dx6ZBkG_.webp"
+                                alt="email-image"
+                                class="clickable"
+                        /></a>
+                    </div>
+                </div>
+
+                <!-- bottom-spacer -->
+                <div class="link-project-bottom-spacer"></div>
+            </div>
+        </div>
+
+        <!-- Main, AOS and browser detection scripts -->
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                function isFirefox() {
+                    return (
+                        navigator.userAgent.toLowerCase().indexOf("firefox") !==
+                        -1
+                    );
+                }
+
+                // check if the browser is Firefox
+                if (isFirefox()) {
+                    // disable website for Firefox
+                    alert(
+                        "This website may not function properly on Firefox browsers. Please try accessing it with a different browser (Chrome, Edge, Opera, Arc, Brave, Safari, etc)."
+                    );
+                }
+            });
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                AOS.init({
+                    offset: 60,
+                    duration: 1000,
+                });
+            });
+        </script>
+    </body>
+</html>

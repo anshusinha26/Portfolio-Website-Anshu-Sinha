@@ -1,0 +1,12 @@
+User-agent: *
+# Disallow specific private directory
+Disallow: /private/
+# Allow specific file within the private directory
+Allow: /private/public-allowed.html
+
+# Allow all other content to be indexed
+# Note: A blank `Disallow` at the end is redundant and can be removed
+# because the rest of the site is already accessible.
+
+# Specify the location of the sitemap
+Sitemap: https://anshusinha.tech/sitemap.xml
